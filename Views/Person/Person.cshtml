@@ -1,0 +1,132 @@
+﻿@model AMDB.Models.Person
+
+@{
+    ViewData["Title"] = Model.FullName;
+}
+    <div class="main-content bg-dark text-light">
+        <div>
+            <div class="title-box">
+                <h1>
+                @if (ViewBag.SignedIn)
+                {
+                    <a asp-controller="Person" asp-action="EditPerson" asp-route-id="@Model.PersonId" asp-route-fullname="@Model.FullName.ToLower().Replace(" ", "-")" class="btn btn-sm btn-secondary text-uppercase">Edit</a>
+                }
+                @Model.FullName
+                </h1>
+            </div>
+        </div>
+        <div>
+            <div class="poster-box">
+                <img src="~/images/@Model.ProfileImage"/>
+            </div>
+            <div class="bio-box">
+                <p>@Model.Biography</p>
+                <strong class="gray">Born: </strong>
+                @Model.DateOfBirth.Day @Model.DateOfBirth.ToString("MMMM"), @Model.DateOfBirth.Year
+            </div>
+        </div>
+            @{
+                var directed = Model.DirectorCredits.Select(p => p.Production).OrderByDescending(p => p.ReleaseDate.Year).ToList();
+                int directed_index = 0;
+                if (directed.Any())
+                {
+                    <div class="subsection-box bg-dark">
+                        <span class="text-light"><strong>Director Credits </strong>(ordered by year)</span>
+                    </div>
+                    <div class="description-box">
+                        <table class="table-list">
+                            <tbody>
+                                @foreach (var prod in directed)
+                                {
+                                    directed_index++;
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="@(prod is TVShow ? "TVShow" : "Movie")" asp-action="@(prod is TVShow ? "TVShow" : "Movie")" asp-route-id="@prod.ProductionId" asp-route-title="@prod.Title.ToLower().Replace(" ", "-")">
+                                                <img src="~/images/@prod.PosterImage" /></a>
+                                        </td>
+                                        <td>
+                                            <span>
+                                                @directed_index. 
+                                                <a asp-controller="@(prod is TVShow ? "TVShow" : "Movie")" asp-action="@(prod is TVShow ? "TVShow" : "Movie")" asp-route-id="@prod.ProductionId" asp-route-title="@prod.Title.ToLower().Replace(" ", "-")">
+                                                    @prod.Title</a>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span>@prod.ReleaseDate.Year</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                var movies = Model.ProductionCredits.Select(p => p.Production).OfType<Movie>().OrderByDescending(p => p.ReleaseDate.Year).ToList();
+                int movie_index = 0;
+                if (movies.Any())
+                {
+                    <div class="subsection-box bg-dark">
+                        <span class="text-light"><strong>Movie Credits </strong>(ordered by year)</span>
+                    </div>
+                    <div class="description-box">
+                        <table class="table-list">
+                            <tbody>
+                                @foreach (var movie in movies)
+                                {
+                                    movie_index++;
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="Movie" asp-action="Movie" asp-route-id="@movie.ProductionId" asp-route-title="@movie.Title.ToLower().Replace(" ", "-")">
+                                                <img src="~/images/@movie.PosterImage" /></a>
+                                        </td>
+                                        <td>
+                                            <span>
+                                                @movie_index. 
+                                                <a asp-controller="Movie" asp-action="Movie" asp-route-id="@movie.ProductionId" asp-route-title="@movie.Title.ToLower().Replace(" ", "-")">
+                                                    @movie.Title</a>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span>@movie.ReleaseDate.Year</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                var tvshows = Model.ProductionCredits.Select(p => p.Production).OfType<TVShow>().OrderByDescending(p => p.ReleaseDate.Year).ToList();
+                int tvshow_index = 0;
+                if (tvshows.Any())
+                {
+                    <div class="subsection-box bg-dark">
+                        <span class="text-light"><strong>TV Show Credits </strong>(ordered by year)</span>
+                    </div>
+                    <div class="description-box">
+                        <table class="table-list">
+                            <tbody>
+                                @foreach (var tvshow in tvshows)
+                                {
+                                    tvshow_index++;
+                                    <tr>
+                                        <td>
+                                            <a asp-controller="TVShow" asp-action="TVShow" asp-route-id="@tvshow.ProductionId" asp-route-title="@tvshow.Title.ToLower().Replace(" ", "-")">
+                                                <img src="~/images/@tvshow.PosterImage" /></a>
+                                        </td>
+                                        <td>
+                                            <span>
+                                                @tvshow_index. 
+                                                <a asp-controller="TVShow" asp-action="TVShow" asp-route-id="@tvshow.ProductionId" asp-route-title="@tvshow.Title.ToLower().Replace(" ", "-")">
+                                                    @tvshow.Title</a></span>
+                                        </td>
+                                        <td>
+                                            <span>@tvshow.ReleaseDate.Year@if(tvshow.EndDate.Year != 1){<span>-@tvshow.EndDate.Year</span>} else {<span>- </span>}</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+    </div>
+

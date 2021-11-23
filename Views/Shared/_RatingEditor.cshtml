@@ -1,0 +1,13 @@
+﻿@model AMDB.ViewModels.UserRatingVM
+
+@{
+    Model.UserId = ViewBag.UserId;
+}
+@using (Html.BeginForm("RateProduction", "User", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.DropDownListFor(model => model.Value, new SelectList(new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }), "...", new { @class="btn btn-xs btn-warning text-uppercase" })
+    @Html.Hidden("RatingId", Model.RatingId)
+    @Html.Hidden("UserId", Model.UserId)<br />
+    <input type="submit" value="Vote" class="btn btn-xs btn-warning text-uppercase"/>
+}
+

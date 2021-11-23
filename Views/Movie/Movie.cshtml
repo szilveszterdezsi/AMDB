@@ -1,0 +1,92 @@
+﻿@model AMDB.Models.Movie
+
+@{
+    ViewData["Title"] = Model.Title + " (" + Model.ReleaseDate.Year + ")";
+    ViewBag.UserHasVoted = Model.Rating.UserRatings.Any(ur => ur.UserId == ViewBag.UserId);
+}
+<div class="main-content bg-dark text-light">
+    <div>
+        <div class="title-box">
+            @if (ViewBag.SignedIn && !ViewBag.UserHasVoted)
+            {
+                <div class="float-right">
+                        @Html.Partial("_RatingEditor", new AMDB.ViewModels.UserRatingVM { RatingId = Model.Rating.RatingId })
+                </div>
+            }
+            <h1>
+                @if (ViewBag.SignedIn)
+                {
+                    <a asp-controller="Movie" asp-action="EditMovie" asp-route-id="@Model.ProductionId" asp-route-title="@Model.Title.ToLower().Replace(" ", "-")" class="btn btn-sm btn-secondary text-uppercase">Edit</a>
+                }
+                @Model.Title <span class="title-digit silver">(@Model.ReleaseDate.Year)</span>
+            </h1>
+        </div>
+        <div class="rating-box">
+            <div class="container-box">
+                <span class="title-digit">@Model.Rating.AverageVote.ToString("0.0")</span><span class="subtext-font gray">/10</span>
+            </div>
+            <span class="subtext-font silver">@Model.Rating.UserRatings.Count() votes</span>
+            @if (ViewBag.SignedIn && ViewBag.UserHasVoted)
+            {
+                <div><span class="subtext-font silver">Your vote: @Model.Rating.UserRatings.Where(ur => ur.UserId == ViewBag.UserId).Select(ur => ur.Value).FirstOrDefault()</span></div>
+            }
+            else if (!ViewBag.SignedIn)
+            {
+                <div><span class="subtext-font silver"><a asp-controller="User" asp-action="SignInUser" class="text-warning">Sign In</a> to vote!</span></div>
+            }
+        </div>
+    </div>
+    <div class="subtext-box clearfix">
+        <ul class="subtext subtext-font silver">
+            <li>@Model.Duration.Hours.ToString()h @Model.Duration.Minutes.ToString()min</li>
+            <li class="gray">|</li>
+            <li>
+                @for (int i = 0; i < @Model.Genres.Count(); i++)
+                {
+                    <a class="silver" asp-controller="Genre" asp-action="Genre" asp-route-id="@Model.Genres.ElementAt(i).Genre.GenreId" asp-route-name="@Model.Genres.ElementAt(i).Genre.Name.ToLower().Replace(" ", "-")">
+                        <span>@Model.Genres.ElementAt(i).Genre.Name</span></a>if (i < @Model.Genres.Count() - 1){<span>, </span>}
+                }
+            </li>
+            <li class="gray">|</li>
+            <li>@Model.ReleaseDate.Day @Model.ReleaseDate.ToString("MMMM"), @Model.ReleaseDate.Year</li>
+        </ul>
+    </div>
+    <div>
+        <div class="poster-box bg-dark"><img src="~/images/@Model.PosterImage"/></div>
+        <div class="trailer-box bg-dark">
+            <iframe src="@Model.TrailerURL" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+    <div class="description-box">
+        <p>@Model.Description</p>
+        <strong class="gray">Director: </strong>
+        <a asp-controller="Person" asp-action="Person" asp-route-id="@Model.Director.PersonId" asp-route-fullname="@Model.Director.Person.FullName.ToLower().Replace(" ", "-")">
+            <span>@Model.Director.Person.FullName</span>
+        </a><br />
+        <strong class="gray">Stars: </strong>
+        @for (int i = 0; i < @Model.Stars.Count(); i++)
+        {
+            <a asp-controller="Person" asp-action="Person" asp-route-id="@Model.Stars.ElementAt(i).Person.PersonId" asp-route-fullname="@Model.Stars.ElementAt(i).Person.FullName.ToLower().Replace(" ", "-")">
+                <span>@Model.Stars.ElementAt(i).Person.FullName</span></a>if (i < @Model.Stars.Count() - 1){<span>, </span>}
+        }
+        <br /><strong class="gray">Keywords: </strong>
+        @for (int i = 0; i < @Model.Keywords.Count(); i++)
+        {
+            <a asp-controller="Keyword" asp-action="Keyword" asp-route-id="@Model.Keywords.ElementAt(i).Keyword.KeywordId" asp-route-name="@Model.Keywords.ElementAt(i).Keyword.Name.ToLower().Replace(" ", "-")">
+                <span>@Model.Keywords.ElementAt(i).Keyword.Name</span></a>if (i < @Model.Keywords.Count() - 1){<span>, </span>}
+        }
+    </div>
+    @if (Model.Suggestions.Any())
+    {
+        <div class="subsection-box bg-dark">
+            <span class="text-light"><strong>Suggestions </strong>(based on most matching keywords)</span>
+        </div>
+        <div class="suggestion-box p-0 bg-white">
+            @foreach (var prod in Model.Suggestions)
+            {
+                <a asp-controller="@(prod is TVShow ? "TVShow" : "Movie")" asp-action="@(prod is TVShow ? "TVShow" : "Movie")" asp-route-id="@prod.ProductionId" asp-route-title="@prod.Title.ToLower().Replace(" ", "-")"><img src="~/images/@prod.PosterImage" class="suggestion" /></a>
+            }
+        </div>
+    }
+</div>
+

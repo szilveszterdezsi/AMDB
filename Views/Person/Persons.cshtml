@@ -1,0 +1,25 @@
+﻿@model IEnumerable<AMDB.Models.Person>
+
+@{
+    ViewData["Title"] = "People";
+}
+<h1>@ViewData["Title"]</h1>
+<div class="main-content text-light">
+    <div class="grid gb-white">
+        @foreach (var person in Model)
+        {
+            <div class="post bg-dark">
+                <span class="silver">
+                    <a class="text-warning" asp-controller="Person" asp-action="Person" asp-route-id="@person.PersonId" asp-route-fullname="@person.FullName.ToLower().Replace(" ", "-")">
+                        <img src="~/images/@person.ProfileImage" asp-append-version="true" />
+                        @person.FullName</a>
+                </span>
+            </div>
+        }
+    </div>
+    <div class="description-box" id="pagination">
+        <div class="ppp">View <select id="ppp" class="btn btn-sm" onchange="filter_request()"></select> per page</div>
+        <div class="pager" id="pager"></div>
+    </div>
+</div>
+<script src="~/js/pagination.js" asp-append-version="true"></script>

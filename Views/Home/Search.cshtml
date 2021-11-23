@@ -1,0 +1,119 @@
+﻿@model AMDB.ViewModels.SearchResultVM
+
+@{
+    ViewData["Title"] = "Search for: " + @Model.SearchString;
+}
+    <div class="main-content bg-dark text-light">
+        <div>
+            <div class="title-box">
+                <h1>
+                    Search for: <span class="title-digit">@Model.SearchString</span>
+                </h1>
+            </div>
+        </div>
+        @if (Model.Movies.Any())
+        {
+            int movie_index = 0;
+            <div class="subsection-box bg-warning">
+                <span class="text-dark"><strong>Movies </strong>(ordered by year)</span>
+            </div>
+            <div class="description-box">
+                <table class="table-list">
+                    <tbody>
+                        @foreach (var movie in Model.Movies)
+                        {
+                            movie_index++;
+                            <tr>
+                                <td>
+                                    <a asp-area="" asp-controller="Movie" asp-action="Movie" asp-route-id="@movie.ProductionId" asp-route-title="@movie.Title.ToLower().Replace(" ", "-")">
+                                        <img src="~/images/@movie.PosterImage" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <span>
+                                        @movie_index.
+                                        <a asp-area="" asp-controller="Movie" asp-action="Movie" asp-route-id="@movie.ProductionId" asp-route-title="@movie.Title.ToLower().Replace(" ", "-")">
+                                            @movie.Title
+                                        </a>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span>@movie.ReleaseDate.Year</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        @if (Model.TVShows.Any())
+        {
+            int tvshow_index = 0;
+            <div class="subsection-box bg-warning">
+                <span class="text-dark"><strong>TV Shows </strong>(ordered by year)</span>
+            </div>
+            <div class="description-box">
+                <table class="table-list">
+                    <tbody>
+                        @foreach (var tvshow in Model.TVShows)
+                        {
+                            tvshow_index++;
+                            <tr>
+                                <td>
+                                    <a asp-area="" asp-controller="TVShow" asp-action="TVShow" asp-route-id="@tvshow.ProductionId" asp-route-title="@tvshow.Title.ToLower().Replace(" ", "-")">
+                                        <img src="~/images/@tvshow.PosterImage" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <span>
+                                        @tvshow_index.
+                                        <a asp-area="" asp-controller="TVShow" asp-action="TVShow" asp-route-id="@tvshow.ProductionId" asp-route-title="@tvshow.Title.ToLower().Replace(" ", "-")">
+                                            @tvshow.Title
+                                        </a>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span>@tvshow.ReleaseDate.Year</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        @if (Model.People.Any())
+        {
+            int person_index = 0;
+            <div class="subsection-box bg-warning">
+                <span class="text-dark"><strong>People </strong>(ordered by first name)</span>
+            </div>
+            <div class="description-box">
+                <table class="table-list">
+                    <tbody>
+                        @foreach (var person in Model.People)
+                        {
+                            person_index++;
+                            <tr>
+                                <td>
+                                    <a asp-area="" asp-controller="Person" asp-action="Person" asp-route-id="@person.PersonId" asp-route-fullname="@person.FullName.ToLower().Replace(" ", "-")">
+                                        <img src="~/images/@person.ProfileImage" />
+                                    </a>
+                                </td>
+                                <td>
+                                    <span>
+                                        @person_index.
+                                        <a asp-area="" asp-controller="Person" asp-action="Person" asp-route-id="@person.PersonId" asp-route-fullname="@person.FullName.ToLower().Replace(" ", "-")">
+                                            @person.FullName
+                                        </a>
+                                    </span>
+                                </td>
+                                <td>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+

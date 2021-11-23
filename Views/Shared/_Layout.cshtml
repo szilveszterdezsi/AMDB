@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Another Movie Database</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-toggleable-lg navbar-dark bg-dark text-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="text-dark navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AMDb</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse">
+                    <form class="form-inline" asp-controller="Home" asp-action="Search">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" name="SearchString" aria-label="Search">
+                    </form>
+                    <ul class="navbar-nav flex-grow-1">
+                        @if (ViewBag.SignedIn)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false">Movies</a>
+                                <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" asp-controller="Movie" asp-action="Movies">List all Movies</a>
+                                    <a class="dropdown-item" asp-controller="Movie" asp-action="CreateMovie">Create new Movie</a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false">TV Shows</a>
+                                <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" asp-controller="TVShow" asp-action="TVShows">List all TV Shows</a>
+                                    <a class="dropdown-item" asp-controller="TVShow" asp-action="CreateTVShow">Create new TV Show</a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                                   aria-haspopup="true" aria-expanded="false">People</a>
+                                <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
+                                    <a class="dropdown-item" asp-controller="Person" asp-action="Persons">List all People</a>
+                                    <a class="dropdown-item" asp-controller="Person" asp-action="CreatePerson">Create new Person</a>
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Movie" asp-action="Movies">Movies</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="TVShow" asp-action="TVShows">TV Shows</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Person" asp-action="Persons">People</a>
+                            </li>
+                        }
+                    </ul>
+                    @if (ViewBag.SignedIn)
+                    {
+                        <form method="post" asp-controller="User" asp-action="SignOutUser">
+                            <span>Welcome, @(ViewBag.UserFullName)!&nbsp;</span>
+                            <input type="submit" value="Sign Out" class="btn btn-sm btn-secondary text-uppercase" />
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="User" asp-action="SignInUser" class="btn btn-sm btn-secondary text-uppercase">Sign In</a><span>&nbsp;</span>
+                        <a asp-controller="User" asp-action="RegisterUser" class="btn btn-sm btn-secondary text-uppercase">Register</a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2020 - Another Movie Database
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

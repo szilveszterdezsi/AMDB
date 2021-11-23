@@ -1,0 +1,27 @@
+﻿@model IEnumerable<AMDB.Models.Movie>
+
+@{
+    ViewData["Title"] = "Movies";
+}
+<h1>@ViewData["Title"]</h1>
+<div class="main-content text-light">
+    <div class="grid gb-white">
+        @foreach (var movie in Model)
+        {
+            <div class="post bg-dark">
+                <span class="silver">
+                    <a class="text-warning" asp-controller="Movie" asp-action="Movie" asp-route-id="@movie.ProductionId" asp-route-title="@movie.Title.ToLower().Replace(" ", "-")">
+                        <img src="~/images/@movie.PosterImage" asp-append-version="true" />
+                        @movie.Title
+                    </a> (@movie.ReleaseDate.Year)
+                </span>
+                <span class="subtext-font silver">Rating: @movie.Rating.AverageVote.ToString("0.0") (@movie.Rating.UserRatings.Count() votes)</span>
+            </div>
+        }
+    </div>
+    <div class="description-box" id="pagination">
+        <div class="ppp">View <select id="ppp" class="btn btn-sm" onchange="filter_request()"></select> per page</div>
+        <div class="pager" id="pager"></div>
+    </div>
+</div>
+<script src="~/js/pagination.js" asp-append-version="true"></script>

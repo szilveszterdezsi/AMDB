@@ -1,0 +1,47 @@
+﻿@model AMDB.Models.Genre
+
+@{
+    ViewData["Title"] = Model.Name + " (ordered by rating)";
+    var prods = Model.Productions.OrderByDescending(pp => pp.Production.Rating.AverageVote).ToList();
+}
+<div class="main-content bg-dark text-light">
+    <div>
+        <div class="title-box">
+            <h1>@Model.Name <span class="title-digit silver">(ordered by rating)</span></h1>
+        </div>
+    </div>
+    <div class="description-box">
+        <table class="table-list">
+            <tbody>
+                @for (int i = 0; i < Model.Productions.Count(); i++)
+                {
+                    var prod = prods.ElementAt(i).Production;
+                    <tr class="@(i % 2 == 0 ? "table-row-light" : "table-row-dark")">
+                        <td>
+                            <a asp-controller="@(prod is TVShow ? "TVShow" : "Movie")" asp-action="@(prod is TVShow ? "TVShow" : "Movie")" asp-route-id="@prod.ProductionId" asp-route-title="@prod.Title.ToLower().Replace(" ", "-")">
+                                <img src="~/images/@prod.PosterImage"/></a>
+                        </td>
+                        <td>
+                            <span>
+                                @(i + 1). 
+                                <a asp-area="" asp-controller="@(prod is TVShow ? "TVShow" : "Movie")" asp-action="@(prod is TVShow ? "TVShow" : "Movie")" asp-route-id="@prod.ProductionId" asp-route-title="@prod.Title.ToLower().Replace(" ", "-")">
+                                    @prod.Title</a>
+                                    (@prod.ReleaseDate.Year@if (prod is TVShow)
+                                    {
+                                        if (((TVShow)prod).EndDate.Year != 1)
+                                        {<span>-@(((TVShow)prod).EndDate.Year)</span>}
+                                        else
+                                        {<span>- </span>}
+                                    })
+                            </span>
+                        </td>
+                        <td>
+                            <strong>@prod.Rating.AverageVote.ToString("0.0")</strong>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
